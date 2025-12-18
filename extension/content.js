@@ -1,7 +1,7 @@
 console.log("MailWeave is running");
 
 function readEmail() {
-    console.log("MailWeave is attempting to read Emails");
+    console.log("MailWeave: Attempting to read Emails");
 
     const emailSubject = document.querySelector("h2.hP");
     const subject = emailSubject ? emailSubject.textContent : "Subject not found";
@@ -22,13 +22,40 @@ function readEmail() {
         body: body.substring(0, 250) + "..."
     };
 
-    console.log("MailWeave extracted email data: ", emailData);
+    console.log("MailWeave: Extracted email data: ", emailData);
 
     chrome.storage.local.set({currentEmail: emailData},
         function() {
-            console.log("MailWeave email data saved");
+            console.log("MailWeave: Email data saved");
         }
     );
 
     return emailData
+}
+
+
+function watchEmail() {
+    let prevUrl = location.href;
+
+    const observer = new MutationObserver(function(){
+        const currentUrl = location.href;
+        const urlUpdate = currentUrl !== prevUrl;
+        const emailView = document.querySelector("h2.hP");
+
+        if (urlUpdate && emailView) {
+            prevUrl = currentUrl;
+            console.log("MailWeave: URL updated, reading new email")
+            setTimeout(readEmail, 500);
+        } else if (emailView && !urlUpdate) {
+            console.log("MailWeave: Email detected, reading");
+            readEmail();
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    console.log("MailWeave: Watching for email changes")
 }
