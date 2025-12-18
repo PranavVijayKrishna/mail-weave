@@ -1,0 +1,19 @@
+{
+    "maifest version": 3,
+    "name": "MailWeave",
+    "version": "1.0.0",
+    "permissions": [
+        "activeTab",
+        "storage"
+    ],
+    "host_permissions": [
+        "https://mail.google.com/*"
+    ]
+}
+
+
+
+
+
+
+
