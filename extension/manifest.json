@@ -8,12 +8,13 @@
     ],
     "host_permissions": [
         "https://mail.google.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["https://mail.google.com/*"],
+            "js": ["content.js"],
+            "run_at": "document_end"
+        }
     ]
 }
-
-
-
-
-
-
 
