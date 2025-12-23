@@ -59,3 +59,6 @@ function watchEmail() {
 
     console.log("MailWeave: Watching for email changes")
 }
+
+setTimeout(watchEmail, 2000);
+setTimeout(readEmail, 3000);
