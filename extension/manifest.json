@@ -1,5 +1,5 @@
 {
-    "maifest_version": 3,
+    "manifest_version": 3,
     "name": "MailWeave",
     "version": "1.0.0",
     "icons": {
@@ -18,6 +18,9 @@
             "js": ["content.js"],
             "run_at": "document_end"
         }
-    ]
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    }
 }
 
