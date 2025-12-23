@@ -1,9 +1,9 @@
 {
-    "maifest version": 3,
+    "maifest_version": 3,
     "name": "MailWeave",
     "version": "1.0.0",
     "icons": {
-        "32": "icons/icon1.png"
+        "32": "icons/icon1.jpg"
     },
     "permissions": [
         "activeTab",
