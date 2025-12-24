@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from app.ml.classifier import classify_email as ml_classify
 
 app = FastAPI()
 app.add_middleware(
@@ -21,9 +22,11 @@ def test_main():
 
 @app.post("/classify")
 def classify_email(data: EmailData):
-    # Hardcoded return for now
+    
+    category, confidence = ml_classify(data.subject, data.snippet)
+
     return {
-        "category": "Academic",
-        "confidence": 0.9
+        "category": category,
+        "confidence": confidence
     }
 
