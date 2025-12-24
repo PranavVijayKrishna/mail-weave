@@ -1,27 +1,26 @@
 console.log("MailWeave is running");
 
 function classifyEmail(emailData) {
-    console.log("MailWeave: Sending to backend for classification")
+    console.log("MailWeave: Sending to background script for classification")
 
-    fetch("http://localhost:8000/classify", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
+    chrome.runtime.sendMessage(
+        {
+            action: "classifyEmail",
+            data: {
+                subject: emailData.subject,
+                snippet: emailData.body
+            }
         },
-        body: JSON.stringify({
-            subject: emailData.subject,
-            snippet: emailData.body
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("MailWeave: Classification result:", data);
-        console.log("MailWeave: Category:", data.category);
-        console.log("MailWeave: Confidence:", data.confidence);
-    })
-    .catch(error => {
-        console.error("MailWeave: Error classifying email:", error);
-    });
+        (response) => {
+            if (response.success) {
+                console.log("MailWeave: Classification result:", response.data);
+                console.log("MailWeave: Category:", response.data.category);
+                console.log("MailWeave: Confidence:", response.data.confidence);
+            } else {
+                console.error("MailWeave: Classification failed:", response.error);
+            }
+        }
+    );
 }
 
 
