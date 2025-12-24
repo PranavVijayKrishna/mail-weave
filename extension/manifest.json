@@ -3,7 +3,7 @@
     "name": "MailWeave",
     "version": "1.0.0",
     "icons": {
-        "32": "icons/icon1.jpg"
+        "48": "icons/icon1.png"
     },
     "permissions": [
         "activeTab",
@@ -21,6 +21,9 @@
     ],
     "action": {
         "default_popup": "popup.html"
+    },
+    "background": {
+        "service_worker": "background.js"
     }
 }
 
