@@ -1,5 +1,30 @@
 console.log("MailWeave is running");
 
+function classifyEmail(emailData) {
+    console.log("MailWeave: Sending to backend for classification")
+
+    fetch("http://localhost:8000/classify", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            subject: emailData.subject,
+            snippet: emailData.body
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("MailWeave: Classification result:", data);
+        console.log("MailWeave: Category:", data.category);
+        console.log("MailWeave: Confidence:", data.confidence);
+    })
+    .catch(error => {
+        console.error("MailWeave: Error classifying email:", error);
+    });
+}
+
+
 function readEmail() {
     console.log("MailWeave: Attempting to read Emails");
 
@@ -29,6 +54,8 @@ function readEmail() {
             console.log("MailWeave: Email data saved");
         }
     );
+
+    classifyEmail(emailData);
 
     return emailData
 }
