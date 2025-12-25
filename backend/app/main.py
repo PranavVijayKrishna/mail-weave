@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from app.ml.classifier import classify_email as ml_classify
+from .ml.classifier import classify_email as ml_classify
 
 app = FastAPI()
 app.add_middleware(
