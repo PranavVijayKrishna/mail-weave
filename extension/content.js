@@ -1,4 +1,5 @@
 console.log("MailWeave is running");
+let currentEmailId = null;
 
 function classifyEmail(emailData) {
     console.log("MailWeave: Sending to background script for classification")
@@ -16,6 +17,9 @@ function classifyEmail(emailData) {
                 console.log("MailWeave: Classification result:", response.data);
                 console.log("MailWeave: Category:", response.data.category);
                 console.log("MailWeave: Confidence:", response.data.confidence);
+
+                // Visual badge in Gmail
+                addCategoryBadge(response.data.category, response.data.confidence);
             } else {
                 console.error("MailWeave: Classification failed:", response.error);
             }
@@ -24,11 +28,64 @@ function classifyEmail(emailData) {
 }
 
 
+function addCategoryBadge(category, confidence) {
+    const subjectElement = document.querySelector("h2.hP");
+    
+    if (!subjectElement) {
+        console.log("MailWeave: Subject element not found, can't add badge");
+        return;
+    }
+
+    // duplicate check
+    const existingBadge = subjectElement.querySelector(".mailweave-badge");
+    if (existingBadge) {
+        existingBadge.remove();
+    }
+
+    const badge = document.createElement("span");
+    badge.className = "mailweave-badge";
+    badge.textContent = category;
+
+    const colors = {
+        "ACADEMIC": "#4285F4",
+        "SUBSCRIPTION": "#ea4335",
+        "SOCIAL": "#34a853",
+        "OTHER": "#9e9e9e"
+    };
+
+    badge.style.backgroundColor = colors[category] || "#9e9e9e";
+    badge.style.color = "white";
+    badge.style.padding = "2px 8px";
+    badge.style.borderRadius = "12px";
+    badge.style.fontSize = "12px";
+    badge.style.fontWeight = "600";
+    badge.style.marginLeft = "10px";
+    badge.style.display = "inline-block";
+    badge.style.verticalAlign = "middle";
+
+    subjectElement.appendChild(badge);
+    
+    console.log("MailWeave: Badge added -", category);
+}
+
+
 function readEmail() {
     console.log("MailWeave: Attempting to read Emails");
 
     const emailSubject = document.querySelector("h2.hP");
     const subject = emailSubject ? emailSubject.textContent : "Subject not found";
+
+    // Unique identifier for this email (URL hash)
+    const emailId = window.location.hash;
+    
+    // Check if this email is already processed
+    if (emailId === currentEmailId) {
+        console.log("MailWeave: Already processed this email, skipping");
+        return;
+    }
+    
+    // Update current email ID
+    currentEmailId = emailId;
 
     const emailBody = document.querySelector("div.a3s.aiL");
     const body = emailBody ? emailBody.textContent : "Body not found";
@@ -66,15 +123,16 @@ function watchEmail() {
     const observer = new MutationObserver(function(){
         const currentUrl = location.href;
         const urlUpdate = currentUrl !== prevUrl;
-        const emailView = document.querySelector("h2.hP");
 
-        if (urlUpdate && emailView) {
+        // Only proceed if URL changed 
+        if (urlUpdate) {
             prevUrl = currentUrl;
-            console.log("MailWeave: URL updated, reading new email")
-            setTimeout(readEmail, 500);
-        } else if (emailView && !urlUpdate) {
-            console.log("MailWeave: Email detected, reading");
-            readEmail();
+            const emailView = document.querySelector("h2.hP");
+            
+            if (emailView) {
+                console.log("MailWeave: URL updated, reading new email");
+                setTimeout(readEmail, 500);
+            }
         }
     });
 
