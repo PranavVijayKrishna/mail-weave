@@ -47,10 +47,12 @@ function addCategoryBadge(category, confidence) {
     badge.textContent = category;
 
     const colors = {
-        "ACADEMIC": "#4285F4",
-        "SUBSCRIPTION": "#ea4335",
-        "SOCIAL": "#34a853",
-        "OTHER": "#9e9e9e"
+        "Assignment": "#4285f4",    
+        "Exam": "#fbbc04",         
+        "Subscription": "#ea4335",
+        "Social": "#34a853",
+        "Promotions": "#9c27b0",
+        "Other": "#9e9e9e"
     };
 
     badge.style.backgroundColor = colors[category] || "#9e9e9e";
