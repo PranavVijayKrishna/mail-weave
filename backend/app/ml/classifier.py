@@ -1,17 +1,20 @@
-ACADEMIC = ["homework", "assignment", "exam", "quiz", "deadline", "lecture", "class", "professor", "study", "test"]
-SUBSCRIPTION = ["unsubscribe", "receipt", "invoice", "billing", "payment", "subscription", "order"]
-SOCIAL = ["invited", "birthday", "party", "event", "celebration", "wedding"]
+import joblib
+import os
 
-# temporary classification
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, 'email_classifier_model.pkl')
+vectorizer_path = os.path.join(current_dir, 'tfidf_vectorizer.pkl')
+
+model = joblib.load(model_path)
+vectorizer = joblib.load(vectorizer_path)
+
+
 def classify_email(subject: str, snippet: str):
-    text = f"{subject} {snippet}".lower()
+    text = f"{subject} {snippet}"
 
-    if any(word in text for word in ACADEMIC):
-        return "ACADEMIC", 0.9
-    if any(word in text for word in SUBSCRIPTION):
-        return "SUBSCRIPTION", 0.85
-    if any(word in text for word in SOCIAL):
-        return "SOCIAL", 0.8
-    
-    return "OTHER", 0.6
+    text_tfidf = vectorizer.transform([text])
+    category = model.predict(text_tfidf)[0]
+    probabilities = model.predict_proba(text_tfidf)[0]
+    confidence = float(max(probabilities))
 
+    return category, confidence
